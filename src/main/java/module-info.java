@@ -1,0 +1,2 @@
+module org.payjoin.sender {
+}
