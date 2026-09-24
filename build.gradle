@@ -18,11 +18,27 @@ repositories {
     mavenCentral()
 }
 
+def payjoinOracle = file(findProperty('payjoinOracle') ?: "${rootDir}/../rust-payjoin")
+def oracleClasses = new File(payjoinOracle, 'payjoin-ffi/kotlin/build/classes/kotlin/main')
+def oracleNative = new File(payjoinOracle, 'target/debug/libpayjoin_ffi.dylib')
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    if (oracleClasses.isDirectory() && oracleNative.isFile()) {
+        testImplementation files(oracleClasses)
+        testImplementation 'org.jetbrains.kotlin:kotlin-stdlib:2.3.21'
+        testImplementation 'net.java.dev.jna:jna:5.17.0'
+        testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
+    }
 }
 
 test {
     useJUnitPlatform()
+    if (oracleNative.isFile()) {
+        jvmArgs '--enable-native-access=ALL-UNNAMED'
+        systemProperty 'payjoin.oracle.native', oracleNative.absolutePath
+        systemProperty 'uniffi.component.payjoin.libraryOverride', oracleNative.absolutePath
+        systemProperty 'jna.library.path', oracleNative.parent
+    }
 }
