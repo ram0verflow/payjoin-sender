@@ -25,6 +25,11 @@ public final class Secp256k1 {
         return point(secretKey).getEncoded(true);
     }
 
+    /** Accepts a compressed or uncompressed encoding and returns the 65-byte form. */
+    public static byte[] uncompressed(byte[] encoded) {
+        return decodePoint(encoded).getEncoded(false);
+    }
+
     /** 32-byte big-endian x coordinate of secret * public. */
     public static byte[] diffieHellman(byte[] secretKey, byte[] publicKey) {
         ECPoint shared = decodePoint(publicKey).multiply(scalar(secretKey)).normalize();
