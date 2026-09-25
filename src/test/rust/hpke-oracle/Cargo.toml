@@ -1,0 +1,9 @@
+[package]
+name = "hpke-oracle"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+bitcoin-hpke = { version = "0.13.0", features = ["secp"] }
+rand_core = "0.6"

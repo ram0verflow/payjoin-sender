@@ -99,11 +99,7 @@ public final class Hpke {
         return Hkdf.extract(salt, concat(ascii("HPKE-v1"), suite, label, ikm));
     }
 
-    /**
-     * {@code labeled_info} is {@code I2OSP(L, 2) || "HPKE-v1" || suite_id || label || info}.
-     * bitcoin-hpke 0.13, which rust-payjoin uses, expands in that order, and the
-     * secp256k1 HPKE draft vectors match it.
-     */
+    /** RFC 9180 §4: {@code I2OSP(L, 2) || "HPKE-v1" || suite_id || label || info}. */
     private static byte[] labeledExpand(byte[] suite, byte[] prk, byte[] label, byte[] info, int length) {
         byte[] labeled = concat(new byte[] {(byte) (length >> 8), (byte) length}, ascii("HPKE-v1"), suite, label, info);
         return Hkdf.expand(prk, labeled, length);
