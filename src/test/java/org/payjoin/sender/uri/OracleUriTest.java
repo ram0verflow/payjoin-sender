@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.lang.reflect.Method;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * Compares canonical URIs with a local payjoin-ffi build. The test is skipped
  * when that build is not on the machine.
  */
+@Tag("oracle")
 class OracleUriTest {
     private static final String EXAMPLE = "bitcoin:tb1q6q6de88mj8qkg0q5lupmpfexwnqjsr4d2gvx2p"
             + "?amount=0.00666666&pjos=0&pj=HTTPS://PAYJO.IN/TXJCGKTKXLUUZ"

@@ -50,7 +50,18 @@ class OhttpTest {
         assertArrayEquals(
                 hex("0004504f5354056874747073087061796a6f2e696e0e2f54584a43474b544b584c55555a000301020300"),
                 encoded);
+        byte[] get = Bhttp.request("GET", "https", "payjo.in", "/TXJCGKTKXLUUZ", body);
+        assertArrayEquals(
+                hex("0003474554056874747073087061796a6f2e696e0e2f54584a43474b544b584c55555a000301020300"),
+                get);
+        byte[] padded = Bhttp.responseBytes(200, new byte[] {4, 5});
+        byte[] withPadding = new byte[padded.length + 8];
+        System.arraycopy(padded, 0, withPadding, 0, padded.length);
+        Bhttp.Reply reply = Bhttp.response(withPadding);
+        assertEquals(200, reply.status());
+        assertArrayEquals(new byte[] {4, 5}, reply.body());
         assertThrows(IllegalArgumentException.class, () -> Bhttp.response(new byte[] {0x01}));
+        assertThrows(IllegalArgumentException.class, () -> Bhttp.response(Arrays.copyOf(padded, padded.length - 1)));
     }
 
     @Test

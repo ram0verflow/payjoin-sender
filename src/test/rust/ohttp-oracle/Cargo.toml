@@ -1,0 +1,10 @@
+[package]
+name = "ohttp-oracle"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+bhttp = "0.6.1"
+bitcoin-ohttp = { version = "0.6.0", features = ["client", "server", "rust-hpke"] }
+secp256k1 = "0.29"
