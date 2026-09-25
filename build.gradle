@@ -34,12 +34,29 @@ dependencies {
     }
 }
 
-test {
-    useJUnitPlatform()
+def configurePayjoinFfi = { task ->
     if (oracleNative.isFile()) {
-        jvmArgs '--enable-native-access=ALL-UNNAMED'
-        systemProperty 'payjoin.oracle.native', oracleNative.absolutePath
-        systemProperty 'uniffi.component.payjoin.libraryOverride', oracleNative.absolutePath
-        systemProperty 'jna.library.path', oracleNative.parent
+        task.jvmArgs '--enable-native-access=ALL-UNNAMED'
+        task.systemProperty 'payjoin.oracle.native', oracleNative.absolutePath
+        task.systemProperty 'uniffi.component.payjoin.libraryOverride', oracleNative.absolutePath
+        task.systemProperty 'jna.library.path', oracleNative.parent
     }
+}
+
+test {
+    useJUnitPlatform {
+        excludeTags 'oracle'
+    }
+    configurePayjoinFfi(it)
+}
+
+tasks.register('oracleTest', Test) {
+    group = 'verification'
+    description = 'Cross-checks that need a Rust toolchain. Not part of the default test task.'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'oracle'
+    }
+    configurePayjoinFfi(it)
 }

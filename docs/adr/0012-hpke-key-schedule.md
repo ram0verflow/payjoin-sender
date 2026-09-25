@@ -24,12 +24,13 @@ Cross-checks against bitcoin-hpke 0.13.0 run from a Cargo harness under
 library dependency, and no Rust file is in a main source set. The
 harness checks the sender's directions at protocol size: Java seals
 Base and bitcoin-hpke opens it; bitcoin-hpke seals Auth and Java opens
-it. A tampered ciphertext must fail in each direction.
+it. A tampered ciphertext must fail in each direction. Those tests are
+tagged `oracle` and run only from the `oracleTest` task.
 
 ## Consequences
 
 This project maintains the key schedule, including the secp256k1
 `DeriveKeyPair` and the base and auth DH concatenations. Published
-draft vectors stay mandatory. The bitcoin-hpke harness is optional only
-in the sense that `cargo` must be on the path for that test; the test
-fails when the harness cannot run.
+draft vectors stay mandatory. `./gradlew test` does not need a Rust
+toolchain. `./gradlew oracleTest` does, and it fails when `cargo` or
+the harness cannot run.

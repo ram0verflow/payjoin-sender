@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
  * Both sit inside a 7168-byte message after the 64-byte ElligatorSwift
  * encoding and the 16-byte tag.
  */
+@Tag("oracle")
 class HpkeOracleTest {
     private static final int MESSAGE_PLAINTEXT = 7088;
     private static final byte[] INFO_A = "PjV2MsgA".getBytes(StandardCharsets.US_ASCII);
