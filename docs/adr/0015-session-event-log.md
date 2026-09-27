@@ -14,8 +14,9 @@ process. rust-payjoin does that by replaying an append-only log.
 The log is versioned JSON, schema version 1, one JSON object per line.
 Each object has `v` and a type: `created`, `posted`, `cancelled`, or
 `closed`. `created` holds the reply key, the Original PSBT, the
-endpoint, the expiry, the 34-byte OHTTP key, the receiver key, and the
-output-substitution flag, plus the fee parameters from ADR 0014.
+endpoint, the expiry, the 34-byte OHTTP key, the receiver key, the
+payee script, and the output-substitution flag, plus the fee parameters
+from ADR 0014.
 `closed` holds the outcome and, on success, the Proposal PSBT. An
 unknown `v` is rejected. Replay restores the session.
 

@@ -12,6 +12,13 @@ final class Hex {
         return out.toString();
     }
 
+    static byte[] decode(String hex) {
+        if ((hex.length() & 1) != 0) {
+            throw new IllegalArgumentException("session key is not hex");
+        }
+        return decode(hex, hex.length() / 2);
+    }
+
     static byte[] decode(String hex, int expected) {
         if (hex.length() != expected * 2) {
             throw new IllegalArgumentException("session key has the wrong length");

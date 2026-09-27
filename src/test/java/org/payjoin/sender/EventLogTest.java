@@ -11,6 +11,7 @@ class EventLogTest {
         EventLog.Event created = new EventLog.Event("created");
         created.reply = "aa";
         created.psbt = "cHNidA==";
+        created.payee = "0014";
         created.endpoint = "https://payjo.in/ID";
         created.expiry = 1_700_000_000L;
         created.ohttp = "01";

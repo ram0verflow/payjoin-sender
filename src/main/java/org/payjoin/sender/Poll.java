@@ -32,7 +32,7 @@ public final class Poll implements Session {
 
     /**
      * A directory status of 202 returns this same step while the session has not expired.
-     * A proposal closes the session. It is not ready to sign.
+     * A proposal closes the session after the sender checklist passes.
      */
     public Session resume(int status, byte[] body) {
         state.requireOpen();
@@ -60,6 +60,14 @@ public final class Poll implements Session {
         try {
             byte[] plaintext = Messages.decryptB(reply.body(), state.replySecret, state.receiverUncompressed());
             byte[] psbt = PsbtBytes.proposal(plaintext);
+            Checklist.accept(
+                    state.originalPsbt,
+                    psbt,
+                    state.payee,
+                    state.substitution,
+                    state.feeIndex,
+                    state.feeSats,
+                    state.minFee);
             String encoded = Base64.getEncoder().encodeToString(psbt);
             state.persister.append(EventLog.closed("success", encoded));
             state.closed = true;

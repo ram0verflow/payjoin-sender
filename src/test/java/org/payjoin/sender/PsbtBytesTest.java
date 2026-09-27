@@ -30,6 +30,51 @@ class PsbtBytesTest {
         assertThrows(CounterpartyException.class, () -> PsbtBytes.proposal(padded));
         byte[] error = new byte[] {'{', '"', 'e', '"', ':', '1', '}', 0, 0};
         assertThrows(CounterpartyException.class, () -> PsbtBytes.proposal(error));
+        assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(duplicatedKey(psbt)));
+        assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(nonMinimalLength()));
+        assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(oversizedLength(psbt)));
+        assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(malformedWitness()));
+    }
+
+    private static byte[] duplicatedKey(byte[] psbt) {
+        int key = 63;
+        byte[] extra = java.util.Arrays.copyOf(psbt, psbt.length + key);
+        System.arraycopy(extra, 5, extra, 5 + key, psbt.length - 5);
+        System.arraycopy(psbt, 5, extra, 5, key);
+        return extra;
+    }
+
+    private static byte[] nonMinimalLength() {
+        byte[] psbt = minimalPsbt();
+        byte[] out = new byte[psbt.length + 2];
+        out[0] = psbt[0];
+        out[1] = psbt[1];
+        out[2] = psbt[2];
+        out[3] = psbt[3];
+        out[4] = psbt[4];
+        out[5] = (byte) 0xfd;
+        out[6] = 1;
+        out[7] = 0;
+        System.arraycopy(psbt, 6, out, 8, psbt.length - 6);
+        return out;
+    }
+
+    private static byte[] oversizedLength(byte[] psbt) {
+        byte[] out = psbt.clone();
+        out[out.length - 3] = (byte) 0xff;
+        return out;
+    }
+
+    private static byte[] malformedWitness() {
+        byte[] psbt = minimalPsbt();
+        byte[] out = java.util.Arrays.copyOf(psbt, psbt.length + 4);
+        out[69] = 0x01;
+        out[70] = 0x01;
+        out[71] = 0x01;
+        out[72] = (byte) 0xff;
+        out[73] = 0x00;
+        out[74] = 0x00;
+        return out;
     }
 
     static byte[] minimalPsbt() {

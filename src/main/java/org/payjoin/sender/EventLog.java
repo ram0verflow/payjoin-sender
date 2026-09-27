@@ -9,7 +9,7 @@ final class EventLog {
     static final int MAX_LINE_BYTES = 65536;
 
     private static final Set<String> CREATED_KEYS = Set.of(
-            "v", "type", "reply", "psbt", "endpoint", "expiry", "ohttp", "receiver", "substitution",
+            "v", "type", "reply", "psbt", "payee", "endpoint", "expiry", "ohttp", "receiver", "substitution",
             "feeIndex", "feeSats", "minFee");
     private static final Set<String> CLOSED_KEYS = Set.of("v", "type", "outcome", "proposal");
     private static final Set<String> BARE_KEYS = Set.of("v", "type");
@@ -21,6 +21,7 @@ final class EventLog {
         out.append("{\"v\":1,\"type\":\"created\"");
         stringField(out, "reply", event.reply);
         stringField(out, "psbt", event.psbt);
+        stringField(out, "payee", event.payee);
         stringField(out, "endpoint", event.endpoint);
         out.append(",\"expiry\":").append(event.expiry);
         stringField(out, "ohttp", event.ohttp);
@@ -129,6 +130,7 @@ final class EventLog {
         Event event = new Event("created");
         event.reply = text(required(fields, "reply"), "reply");
         event.psbt = text(required(fields, "psbt"), "psbt");
+        event.payee = text(required(fields, "payee"), "payee");
         event.endpoint = text(required(fields, "endpoint"), "endpoint");
         event.expiry = nonNegative(required(fields, "expiry"), "expiry");
         event.ohttp = text(required(fields, "ohttp"), "ohttp");
@@ -241,6 +243,7 @@ final class EventLog {
         final String type;
         String reply;
         String psbt;
+        String payee;
         String endpoint;
         long expiry;
         String ohttp;

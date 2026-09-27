@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Timeout;
 /**
  * Full sender session against payjoin-cli on regtest. Not part of {@code test}.
  * The proposal is a rust-payjoin Message B, ElligatorSwift prefix included.
+ * It is returned only after the sender checklist accepts it.
  */
 @Tag("oracle")
 class SessionOracleTest {

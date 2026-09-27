@@ -24,8 +24,10 @@ public final class Sender {
         Objects.requireNonNull(random, "random");
         Objects.requireNonNull(persister, "persister");
         PayjoinUri parsed = PayjoinUri.parse(uri);
+        byte[] payee = AddressScript.script(parsed.address());
         boolean substitution = parsed.outputSubstitution() && !options.disableOutputSubstitution();
         V2Body.encode(originalPsbtBase64, substitution, options.feeOutputIndex(), options.maxFeeSats(), options.minFeeSatPerVbyte());
+        Checklist.vetOriginal(originalPsbtBase64, payee, parsed.amountSats());
         byte[] reply = replySecret(random);
         byte[] ohttp = new byte[34];
         ohttp[0] = (byte) parsed.ohttpKeyId();
@@ -33,6 +35,7 @@ public final class Sender {
         EventLog.Event created = new EventLog.Event("created");
         created.reply = Hex.encode(reply);
         created.psbt = originalPsbtBase64;
+        created.payee = Hex.encode(payee);
         created.endpoint = endpoint(parsed);
         created.expiry = parsed.expirationUnix();
         created.ohttp = Hex.encode(ohttp);
@@ -83,6 +86,14 @@ public final class Sender {
             if (!posted) {
                 throw new SessionException("session closed before it was posted");
             }
+            Checklist.accept(
+                    state.originalPsbt,
+                    java.util.Base64.getDecoder().decode(next.proposal),
+                    state.payee,
+                    state.substitution,
+                    state.feeIndex,
+                    state.feeSats,
+                    state.minFee);
             return new Proposal(next.proposal);
         }
         return posted ? new Poll(state) : new Post(state);
@@ -101,6 +112,7 @@ public final class Sender {
         return new SessionState(
                 reply,
                 created.psbt,
+                Hex.decode(created.payee),
                 created.endpoint,
                 created.expiry,
                 ohttp,

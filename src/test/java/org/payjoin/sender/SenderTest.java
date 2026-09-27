@@ -21,7 +21,8 @@ class SenderTest {
     private static final long EXPIRY = 1_800_000_000L;
     private static final byte[] RECEIVER = secret(1);
     private static final byte[] OHTTP = secret(2);
-    private static final String PSBT = Base64.getEncoder().encodeToString(PsbtBytesTest.minimalPsbt());
+    private static final byte[] PAYEE = AddressScript.script("tb1q6q6de88mj8qkg0q5lupmpfexwnqjsr4d2gvx2p");
+    private static final String PSBT = Base64.getEncoder().encodeToString(TestPsbt.funded(PAYEE).bytes());
     private static final String RELAY = "http://relay.example";
 
     @Test
@@ -60,7 +61,7 @@ class SenderTest {
         assertSame(poll, poll.resume(200, DirectoryResponse.seal(poll.context(), 202, new byte[0])));
         assertEquals(2, log.load().size());
 
-        byte[] message = MessagesTest.sealB(PsbtBytesTest.minimalPsbt(), RECEIVER, Hex.decode(created.reply, 32), new Random(7));
+        byte[] message = MessagesTest.sealB(Base64.getDecoder().decode(PSBT), RECEIVER, Hex.decode(created.reply, 32), new Random(7));
         get = poll.request(RELAY);
         Proposal proposal = assertInstanceOf(
                 Proposal.class, poll.resume(200, DirectoryResponse.seal(poll.context(), 200, message)));
@@ -116,6 +117,22 @@ class SenderTest {
         assertThrows(CounterpartyException.class, () -> poll.resume(200, DirectoryResponse.seal(poll.context(), 200, error)));
         assertThrows(SessionException.class, () -> Sender.resume(log, clock, new Random(14)));
         assertThrows(SessionException.class, () -> Sender.resume(new InMemoryPersister(), clock, new Random(15)));
+    }
+
+    @Test
+    void rejectsAProposalThatBreaksTheChecklist() {
+        InMemoryPersister log = new InMemoryPersister();
+        Clock clock = Clock.fixed(Instant.ofEpochSecond(EXPIRY - 10), ZoneOffset.UTC);
+        Post post = Sender.start(uri(true), PSBT, Options.none(), clock, new Random(17), log);
+        post.request(RELAY);
+        Poll poll = post.resume(200, DirectoryResponse.seal(post.context(), 200, new byte[0]));
+        EventLog.Event created = EventLog.parse(log.load().get(0));
+        TestPsbt broken = TestPsbt.funded(PAYEE);
+        broken.version = 1;
+        byte[] message = MessagesTest.sealB(broken.bytes(), RECEIVER, Hex.decode(created.reply, 32), new Random(18));
+        poll.request(RELAY);
+        assertThrows(CounterpartyException.class, () -> poll.resume(200, DirectoryResponse.seal(poll.context(), 200, message)));
+        assertThrows(SessionException.class, () -> Sender.resume(log, clock, new Random(19)));
     }
 
     private static String uri(boolean disableSubstitution) {

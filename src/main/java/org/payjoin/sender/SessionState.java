@@ -12,6 +12,7 @@ import org.payjoin.sender.uri.ShortId;
 final class SessionState {
     final byte[] replySecret;
     final String originalPsbt;
+    final byte[] payee;
     final String endpoint;
     final long expiry;
     final byte[] ohttpKey;
@@ -29,6 +30,7 @@ final class SessionState {
     SessionState(
             byte[] replySecret,
             String originalPsbt,
+            byte[] payee,
             String endpoint,
             long expiry,
             byte[] ohttpKey,
@@ -42,6 +44,7 @@ final class SessionState {
             Random random) {
         this.replySecret = replySecret;
         this.originalPsbt = originalPsbt;
+        this.payee = payee;
         this.endpoint = endpoint;
         this.expiry = expiry;
         this.ohttpKey = ohttpKey;

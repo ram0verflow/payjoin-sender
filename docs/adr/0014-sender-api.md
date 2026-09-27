@@ -29,12 +29,11 @@ the same poll step while the directory status is 202 and the URI expiry
 has not passed, and returns the Proposal PSBT base64 when the proposal
 arrives. A 202 after expiry fails as expired.
 
-Once the BIP 78 sender checklist lands, `resume` returns that Proposal
-PSBT only after the checklist passes. Until then, a proposal is not
-offered as ready to sign.
+`resume` returns the Proposal PSBT only after the sender checklist in
+ADR 0005 passes.
 
 ## Consequences
 
 Callers perform every POST and GET, and they may switch relays between
 polls. HPKE, OHTTP, and the reply key stay inside the session. The
-checklist is a later phase; this API does not skip it.
+checklist runs before the Proposal is returned.
