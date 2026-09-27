@@ -18,5 +18,5 @@ persister.
 
 ## Consequences
 
-Callers choose storage. Two applications cannot exchange session files
-until a versioned format is accepted in a later ADR.
+Callers choose storage. ADR 0015 is the versioned event-log format.
+Tests still use an in-memory persister.
