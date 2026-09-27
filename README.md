@@ -1,5 +1,7 @@
 # payjoin-sender
 
+Author: Abhiram M
+
 A pure-Java sender for [BIP 77](https://github.com/bitcoin/bips/blob/master/bip-0077.mediawiki) (Async Payjoin).
 
 **Experimental. The cryptography is unaudited. Do not use it with real funds. Test on regtest or signet only.**
@@ -36,36 +38,46 @@ import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
-Persister log = new Persister() {
-    private final List<String> lines = new ArrayList<>();
+public final class SessionExample {
+    private SessionExample() {}
 
-    public void append(String line) {
-        lines.add(line);
+    public static String run(String payjoinUri, String originalPsbtBase64, String relayUrl) {
+        Persister log = new Persister() {
+            private final List<String> lines = new ArrayList<>();
+
+            public void append(String line) {
+                lines.add(line);
+            }
+
+            public List<String> load() {
+                return List.copyOf(lines);
+            }
+        };
+
+        Post post = Sender.start(
+                payjoinUri,
+                originalPsbtBase64,
+                Options.none(),
+                Clock.systemUTC(),
+                new SecureRandom(),
+                log);
+        Request posted = post.request(relayUrl);
+        byte[] response = httpPost(posted.url(), Request.CONTENT_TYPE, posted.body());
+        Poll poll = post.resume(200, response);
+
+        Session step = poll;
+        while (step instanceof Poll waiting) {
+            Request next = waiting.request(relayUrl);
+            response = httpPost(next.url(), Request.CONTENT_TYPE, next.body());
+            step = waiting.resume(200, response);
+        }
+        return ((Proposal) step).psbt();
     }
 
-    public List<String> load() {
-        return List.copyOf(lines);
+    static byte[] httpPost(String url, String contentType, byte[] body) {
+        throw new UnsupportedOperationException(contentType + " " + url + " (" + body.length + " bytes)");
     }
-};
-
-Post post = Sender.start(
-        payjoinUri,
-        originalPsbtBase64,
-        Options.none(),
-        Clock.systemUTC(),
-        new SecureRandom(),
-        log);
-Request posted = post.request(relayUrl);
-byte[] response = httpPost(posted.url(), Request.CONTENT_TYPE, posted.body());
-Poll poll = post.resume(200, response);
-
-Session step = poll;
-while (step instanceof Poll waiting) {
-    Request next = waiting.request(relayUrl);
-    response = httpPost(next.url(), Request.CONTENT_TYPE, next.body());
-    step = waiting.resume(200, response);
 }
-String proposalPsbt = ((Proposal) step).psbt();
 ```
 
 `proposalPsbt` is the receiver's PSBT with padding removed. The sender checklist has already passed. Wallet metadata from the original PSBT is not copied back; the caller restores that.
