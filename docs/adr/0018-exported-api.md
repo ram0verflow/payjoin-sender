@@ -13,13 +13,16 @@ package stays reachable.
 
 ## Decision
 
-The module exports `org.payjoin.sender` and `org.payjoin.sender.uri`.
-`org.payjoin.sender.crypto` and `org.payjoin.sender.ohttp` are not
+The module exports `dev.ramoverflow.payjoin.sender` and
+`dev.ramoverflow.payjoin.sender.uri`.
+`dev.ramoverflow.payjoin.sender.crypto` and
+`dev.ramoverflow.payjoin.sender.ohttp` are not
 exported. Their package docs say they are internal. Classes there stay
 public so the rest of this module can call them.
 
-In `org.payjoin.sender.uri`, the public types are `PayjoinUri` and
-`UriParseException`. `Bech32` and `ShortId` are package-private.
+In `dev.ramoverflow.payjoin.sender.uri`, the public types are
+`PayjoinUri` and `UriParseException`. `Bech32` and `ShortId` are
+package-private.
 `PayjoinUri.shortId()` returns the mailbox id as a string.
 `PayjoinUri.shortIdOf` does the same for a compressed secp256k1 key,
 which is how the session names a reply key.

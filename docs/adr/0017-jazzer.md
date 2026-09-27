@@ -14,10 +14,11 @@ extra test dependency, not a replacement for that runner.
 
 The fuzzer is Jazzer, `com.code-intelligence:jazzer-junit:0.30.0`,
 test scope only. It is not on the runtime classpath of the published
-jar, and its native agent is not shipped.
+jar, and its native library is not shipped.
 
 `./gradlew fuzz` is the only task that runs it. The task sets
-`JAZZER_FUZZ=1`, instruments `org.payjoin.sender.**`, and forks once
+`JAZZER_FUZZ=1` and instruments
+`dev.ramoverflow.payjoin.sender.**`. It forks once
 per class. libFuzzer runs one target per process, so each parser is
 its own test class. Each target is bounded to 30 seconds.
 `./gradlew test` excludes the `fuzz` tag, so it does not replay the

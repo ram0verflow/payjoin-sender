@@ -9,12 +9,13 @@ ADR 0004 planned to subclass Bouncy Castle's HPKE framework with a
 custom secp256k1 KEM. `org.bouncycastle.crypto.hpke.KEM` has no public
 constructor and is not visible outside its package, so that hook cannot
 be used. BIP 77 still needs DHKEM(secp256k1, HKDF-SHA256) with
-ChaCha20-Poly1305, KEM id `0x0016`. Writing the key schedule here is a
-hand-implemented primitive and needed owner approval.
+ChaCha20-Poly1305, KEM id `0x0016`. The key schedule is implemented
+in this repository.
 
 ## Decision
 
-Implement the RFC 9180 key schedule in `org.payjoin.sender.crypto.Hpke`.
+Implement the RFC 9180 key schedule in
+`dev.ramoverflow.payjoin.sender.crypto.Hpke`.
 Bouncy Castle supplies the curve and HKDF. The JDK supplies
 ChaCha20-Poly1305. `LabeledExpand` follows RFC 9180: the info string
 starts with `I2OSP(L, 2)`.

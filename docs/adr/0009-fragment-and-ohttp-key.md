@@ -27,4 +27,3 @@ public-key bytes, then rebuild the RFC 9458 key config with KEM
 
 URIs match rust-payjoin and the BIP example. They do not follow the
 rationale's reverse-order sentence or the "2-byte" key-id sentence.
-Upstream has not been contacted about either mismatch.

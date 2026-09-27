@@ -6,8 +6,8 @@ Date: 2026-09-24
 ## Context
 
 The BIP 78 sender checklist inspects inputs, outputs, sequences, fees,
-sighash types, and final scripts. Callers such as Sparrow already have
-their own PSBT type and restore wallet metadata themselves.
+sighash types, and final scripts. Callers already have their own
+PSBT type and restore wallet metadata themselves.
 
 ## Decision
 
@@ -31,8 +31,9 @@ Wallet metadata is not copied back into it.
 
 ## Consequences
 
-Callers serialize before calling in and parse the returned string. A
-small PSBT parser lives in this repository. bitcoinj is not a dependency.
+Callers serialize before calling in and parse the returned string.
+A small PSBT parser lives in this repository. bitcoinj is not a
+dependency.
 Callers restore wallet metadata themselves. The created session event
 records the payee script from the URI address so the checklist can run
 when the proposal arrives, including after resume.

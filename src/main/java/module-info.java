@@ -1,6 +1,6 @@
-module org.payjoin.sender {
+module dev.ramoverflow.payjoin.sender {
     requires org.bouncycastle.provider;
 
-    exports org.payjoin.sender;
-    exports org.payjoin.sender.uri;
+    exports dev.ramoverflow.payjoin.sender;
+    exports dev.ramoverflow.payjoin.sender.uri;
 }

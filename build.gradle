@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'org.payjoin'
+group = 'dev.ramoverflow.payjoin'
 version = '0.1.0-SNAPSHOT'
 
 java {
@@ -66,7 +66,7 @@ tasks.register('fuzz', Test) {
     maxParallelForks = 1
     environment 'JAZZER_FUZZ', '1'
     systemProperty 'jazzer.fuzz', '1'
-    systemProperty 'jazzer.instrument', 'org.payjoin.sender.**'
+    systemProperty 'jazzer.instrument', 'dev.ramoverflow.payjoin.sender.**'
     outputs.upToDateWhen { false }
 }
 
