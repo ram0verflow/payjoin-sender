@@ -62,19 +62,21 @@ public final class SessionExample {
                 new SecureRandom(),
                 log);
         Request posted = post.request(relayUrl);
-        byte[] response = httpPost(posted.url(), Request.CONTENT_TYPE, posted.body());
-        Poll poll = post.resume(200, response);
+        HttpReply postedReply = httpPost(posted.url(), Request.CONTENT_TYPE, posted.body());
+        Poll poll = post.resume(postedReply.status(), postedReply.body());
 
         Session step = poll;
         while (step instanceof Poll waiting) {
             Request next = waiting.request(relayUrl);
-            response = httpPost(next.url(), Request.CONTENT_TYPE, next.body());
-            step = waiting.resume(200, response);
+            HttpReply reply = httpPost(next.url(), Request.CONTENT_TYPE, next.body());
+            step = waiting.resume(reply.status(), reply.body());
         }
         return ((Proposal) step).psbt();
     }
 
-    static byte[] httpPost(String url, String contentType, byte[] body) {
+    private record HttpReply(int status, byte[] body) {}
+
+    static HttpReply httpPost(String url, String contentType, byte[] body) {
         throw new UnsupportedOperationException(contentType + " " + url + " (" + body.length + " bytes)");
     }
 }
