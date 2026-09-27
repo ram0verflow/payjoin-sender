@@ -31,8 +31,7 @@ new POST from `created`. Resume from `posted` polls.
 
 The relay URL is not stored.
 
-How the JSON is read and written is a separate decision. No JSON
-library and no hand-written parser are added under this ADR.
+ADR 0016 is the codec. No JSON library is added under this ADR.
 
 ## Consequences
 
