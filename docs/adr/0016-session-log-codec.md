@@ -19,7 +19,8 @@ Parsing rejects duplicate keys, unknown keys, missing required keys,
 trailing data after the object, and nesting deeper than one object.
 Numbers are integers only: no fraction, no exponent, no leading zeros.
 Strings contain no escape sequences. The other allowed value is a
-boolean. A line longer than 65536 bytes is rejected.
+boolean. Raw control characters and non-ASCII bytes are rejected. A
+line longer than 65536 bytes is rejected.
 
 The writer emits those values without escape sequences. The result is
 ordinary JSON that a standard parser can read. A JSON library is not
