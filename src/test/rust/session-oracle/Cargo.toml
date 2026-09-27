@@ -1,0 +1,15 @@
+[package]
+name = "session-oracle"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+bitcoin = { version = "0.32.9" }
+payjoin-test-utils = { path = "../../../../../rust-payjoin/payjoin-test-utils" }
+tempfile = "3"
+tokio = { version = "1", features = ["io-util", "macros", "process", "rt-multi-thread", "time"] }
+
+[patch.crates-io]
+payjoin = { path = "../../../../../rust-payjoin/payjoin" }
+payjoin-mailroom = { path = "../../../../../rust-payjoin/payjoin-mailroom" }
