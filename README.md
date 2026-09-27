@@ -80,7 +80,7 @@ public final class SessionExample {
 }
 ```
 
-`proposalPsbt` is the receiver's PSBT with padding removed. The sender checklist has already passed. Wallet metadata from the original PSBT is not copied back; the caller restores that.
+The string returned by `SessionExample.run` is the receiver's PSBT with padding removed. The sender checklist has already passed. Wallet metadata from the original PSBT is not copied back; the caller restores that.
 
 `Options` can set a maximum fee contribution in satoshis, the output index that receives it, a minimum fee rate in satoshis per virtual byte, and whether to disable output substitution.
 
