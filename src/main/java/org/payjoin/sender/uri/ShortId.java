@@ -5,14 +5,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 /** Eight-byte mailbox id, written as uppercase bech32 data with no HRP and no checksum. */
-public final class ShortId {
+final class ShortId {
     private final byte[] bytes;
 
     private ShortId(byte[] bytes) {
         this.bytes = bytes;
     }
 
-    public static ShortId parse(String encoded) {
+    static ShortId parse(String encoded) {
         Bech32.Decoded decoded = Bech32.decode("ID1" + encoded);
         if (!decoded.hrp().equals("ID") || decoded.data().length != 8) {
             throw new UriParseException(UriParseException.Reason.INVALID_PARAMETER, "invalid short id");
@@ -20,7 +20,7 @@ public final class ShortId {
         return new ShortId(decoded.data());
     }
 
-    public static ShortId fromCompressedKey(byte[] compressedKey) {
+    static ShortId fromCompressedKey(byte[] compressedKey) {
         if (compressedKey == null || compressedKey.length != 33) {
             throw new IllegalArgumentException("compressed key must be 33 bytes");
         }
@@ -33,7 +33,7 @@ public final class ShortId {
         return new ShortId(Arrays.copyOf(digest, 8));
     }
 
-    public byte[] bytes() {
+    byte[] bytes() {
         return bytes.clone();
     }
 

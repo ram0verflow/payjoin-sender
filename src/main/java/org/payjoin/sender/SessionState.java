@@ -6,7 +6,7 @@ import java.util.Random;
 import org.payjoin.sender.crypto.Secp256k1;
 import org.payjoin.sender.ohttp.Ohttp;
 import org.payjoin.sender.ohttp.OhttpKeys;
-import org.payjoin.sender.uri.ShortId;
+import org.payjoin.sender.uri.PayjoinUri;
 
 /** Secrets and parameters restored from the log. The relay URL is not here. */
 final class SessionState {
@@ -102,7 +102,7 @@ final class SessionState {
 
     String pollTarget() {
         int slash = endpoint.lastIndexOf('/');
-        String id = ShortId.fromCompressedKey(Secp256k1.compressedPublicKey(replySecret)).toString();
+        String id = PayjoinUri.shortIdOf(Secp256k1.compressedPublicKey(replySecret));
         return endpoint.substring(0, slash + 1) + id;
     }
 

@@ -29,11 +29,21 @@ class PsbtBytesTest {
         padded[padded.length - 1] = 1;
         assertThrows(CounterpartyException.class, () -> PsbtBytes.proposal(padded));
         byte[] error = new byte[] {'{', '"', 'e', '"', ':', '1', '}', 0, 0};
-        assertThrows(CounterpartyException.class, () -> PsbtBytes.proposal(error));
+        CounterpartyException rejected =
+                assertThrows(CounterpartyException.class, () -> PsbtBytes.proposal(error));
+        assertEquals("receiver rejected the original: {\"e\":1}", rejected.getMessage());
         assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(duplicatedKey(psbt)));
         assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(nonMinimalLength()));
         assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(oversizedLength(psbt)));
         assertThrows(IllegalArgumentException.class, () -> PsbtBytes.end(malformedWitness()));
+    }
+
+    @Test
+    void dropsNonPrintableBytesFromAReceiverError() {
+        byte[] error = new byte[] {'{', 0x01, 'n', 'o', 0x7f, (byte) 0xe9, '!', 0, 0};
+        CounterpartyException rejected =
+                assertThrows(CounterpartyException.class, () -> PsbtBytes.proposal(error));
+        assertEquals("receiver rejected the original: {no!", rejected.getMessage());
     }
 
     private static byte[] duplicatedKey(byte[] psbt) {

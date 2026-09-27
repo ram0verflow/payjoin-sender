@@ -3,6 +3,4 @@ module org.payjoin.sender {
 
     exports org.payjoin.sender;
     exports org.payjoin.sender.uri;
-    exports org.payjoin.sender.crypto;
-    exports org.payjoin.sender.ohttp;
 }

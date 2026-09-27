@@ -106,12 +106,13 @@ final class Bhttp {
         }
 
         private byte[] vec() {
-            int length = (int) varint();
-            if (length < 0 || offset + length > bytes.length) {
+            long length = varint();
+            if (length > remaining()) {
                 throw new IllegalArgumentException("truncated Binary HTTP");
             }
-            byte[] value = java.util.Arrays.copyOfRange(bytes, offset, offset + length);
-            offset += length;
+            int size = (int) length;
+            byte[] value = java.util.Arrays.copyOfRange(bytes, offset, offset + size);
+            offset += size;
             return value;
         }
 

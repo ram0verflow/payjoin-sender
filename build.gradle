@@ -25,6 +25,7 @@ def oracleNative = new File(payjoinOracle, 'target/debug/libpayjoin_ffi.dylib')
 dependencies {
     implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
+    testImplementation 'com.code-intelligence:jazzer-junit:0.30.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     if (oracleClasses.isDirectory() && oracleNative.isFile()) {
         testImplementation files(oracleClasses)
@@ -45,9 +46,28 @@ def configurePayjoinFfi = { task ->
 
 test {
     useJUnitPlatform {
-        excludeTags 'oracle'
+        excludeTags 'oracle', 'fuzz'
+    }
+    filter {
+        excludeTestsMatching '*FuzzTest*'
     }
     configurePayjoinFfi(it)
+}
+
+tasks.register('fuzz', Test) {
+    group = 'verification'
+    description = 'Coverage-guided Jazzer runs. Not part of the test task.'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'fuzz'
+    }
+    forkEvery = 1
+    maxParallelForks = 1
+    environment 'JAZZER_FUZZ', '1'
+    systemProperty 'jazzer.fuzz', '1'
+    systemProperty 'jazzer.instrument', 'org.payjoin.sender.**'
+    outputs.upToDateWhen { false }
 }
 
 tasks.register('oracleTest', Test) {

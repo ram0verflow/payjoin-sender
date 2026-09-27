@@ -1,5 +1,5 @@
 /**
- * OHTTP key configuration, Binary HTTP, and fixed-size encapsulation
- * for a BIP 77 sender.
+ * Internal OHTTP and Binary HTTP for the sender session.
+ * This package is not exported.
  */
 package org.payjoin.sender.ohttp;

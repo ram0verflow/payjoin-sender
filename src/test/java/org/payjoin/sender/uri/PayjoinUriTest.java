@@ -18,7 +18,7 @@ class PayjoinUriTest {
         assertEquals("tb1q6q6de88mj8qkg0q5lupmpfexwnqjsr4d2gvx2p", uri.address());
         assertEquals(666666L, uri.amountSats());
         assertFalse(uri.outputSubstitution());
-        assertEquals("TXJCGKTKXLUUZ", uri.shortId().toString());
+        assertEquals("TXJCGKTKXLUUZ", uri.shortId());
         assertEquals(1736218741L, uri.expirationUnix());
         assertEquals(1, uri.ohttpKeyId());
         assertEquals(BIP77, uri.toString());

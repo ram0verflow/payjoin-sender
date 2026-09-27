@@ -4,12 +4,12 @@ package org.payjoin.sender.uri;
  * Bech32 character-set codec with no checksum. Data characters are
  * uppercase, matching BIP 77 fragment parameters and short ids.
  */
-public final class Bech32 {
+final class Bech32 {
     private static final String CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
     private Bech32() {}
 
-    public static String encode(String hrp, byte[] data) {
+    static String encode(String hrp, byte[] data) {
         if (hrp == null || hrp.isEmpty() || hrp.indexOf('1') >= 0) {
             throw new IllegalArgumentException("invalid HRP");
         }
@@ -31,7 +31,7 @@ public final class Bech32 {
         return out.toString().toUpperCase(java.util.Locale.ROOT);
     }
 
-    public static Decoded decode(String encoded) {
+    static Decoded decode(String encoded) {
         if (encoded == null) {
             throw new UriParseException(UriParseException.Reason.INVALID_BECH32, "missing bech32");
         }
@@ -63,5 +63,5 @@ public final class Bech32 {
         return new Decoded(hrp, out);
     }
 
-    public record Decoded(String hrp, byte[] data) {}
+    record Decoded(String hrp, byte[] data) {}
 }

@@ -9,3 +9,4 @@ src/test/rust/hpke-oracle/target/
 src/test/rust/ohttp-oracle/target/
 src/test/rust/directory-oracle/target/
 src/test/rust/session-oracle/target/
+.cifuzz-corpus/

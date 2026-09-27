@@ -14,8 +14,8 @@ import java.util.Base64;
 import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.payjoin.sender.crypto.Secp256k1;
-import org.payjoin.sender.uri.Bech32;
-import org.payjoin.sender.uri.ShortId;
+import org.payjoin.sender.uri.Fragments;
+import org.payjoin.sender.uri.PayjoinUri;
 
 class SenderTest {
     private static final long EXPIRY = 1_800_000_000L;
@@ -51,8 +51,7 @@ class SenderTest {
         assertEquals("posted", EventLog.parse(log.load().get(1)).type);
         assertInstanceOf(Poll.class, Sender.resume(log, clock, new Random(6)));
 
-        String replyId = ShortId.fromCompressedKey(
-                Secp256k1.compressedPublicKey(Hex.decode(created.reply, 32))).toString();
+        String replyId = PayjoinUri.shortIdOf(Secp256k1.compressedPublicKey(Hex.decode(created.reply, 32)));
         assertTrue(poll.pollTarget().endsWith("/" + replyId));
         Request get = poll.request(RELAY);
         assertEquals("POST", get.method());
@@ -142,11 +141,11 @@ class SenderTest {
         byte[] ohttp = new byte[34];
         ohttp[0] = 1;
         System.arraycopy(Secp256k1.compressedPublicKey(OHTTP), 0, ohttp, 1, 33);
-        String fragment = Bech32.encode("EX", expiry)
+        String fragment = Fragments.encode("EX", expiry)
                 + "-"
-                + Bech32.encode("OH", ohttp)
+                + Fragments.encode("OH", ohttp)
                 + "-"
-                + Bech32.encode("RK", Secp256k1.compressedPublicKey(RECEIVER));
+                + Fragments.encode("RK", Secp256k1.compressedPublicKey(RECEIVER));
         String mailbox = "https://payjo.in/TXJCGKTKXLUUZ#" + fragment;
         String pjos = disableSubstitution ? "pjos=0&" : "";
         return "bitcoin:tb1q6q6de88mj8qkg0q5lupmpfexwnqjsr4d2gvx2p?" + pjos + "pj=" + mailbox.replace("#", "%23");

@@ -1,5 +1,5 @@
 /**
- * secp256k1, ElligatorSwift, HKDF-SHA256, ChaCha20-Poly1305, and HPKE
- * as used by BIP 77.
+ * Internal cryptography for the sender session.
+ * This package is not exported.
  */
 package org.payjoin.sender.crypto;

@@ -62,6 +62,12 @@ class OhttpTest {
         assertArrayEquals(new byte[] {4, 5}, reply.body());
         assertThrows(IllegalArgumentException.class, () -> Bhttp.response(new byte[] {0x01}));
         assertThrows(IllegalArgumentException.class, () -> Bhttp.response(Arrays.copyOf(padded, padded.length - 1)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Bhttp.response(new byte[] {
+                    0x01, (byte) 0xff, (byte) 0xff, 0x01, 0x01, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,
+                    (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff
+                }));
     }
 
     @Test

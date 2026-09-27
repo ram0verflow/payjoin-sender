@@ -107,8 +107,14 @@ public final class PayjoinUri {
         return outputSubstitution;
     }
 
-    public ShortId shortId() {
-        return shortId;
+    /** Mailbox short id, uppercase bech32 data with no HRP. */
+    public String shortId() {
+        return shortId.toString();
+    }
+
+    /** Mailbox short id of a compressed secp256k1 public key. */
+    public static String shortIdOf(byte[] compressedKey) {
+        return ShortId.fromCompressedKey(compressedKey).toString();
     }
 
     public long expirationUnix() {
